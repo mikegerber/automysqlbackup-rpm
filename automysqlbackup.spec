@@ -27,7 +27,7 @@ backup rotation, compression and incremental backup.
 %prep
 %setup -qn AutoMySQLBackup-%{version}
 sed -e 's|#!/usr/bin/env bash|#!/usr/bin/bash|g' -i automysqlbackup
-%patch 0 -p1
+%patch -P0 -p1
 
 %build
 true
