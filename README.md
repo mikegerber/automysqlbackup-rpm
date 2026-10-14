@@ -1,4 +1,4 @@
-# muttprofile-rpm
+# automysqlbackup-rpm
 
 Build Fedora and Rocky Linux RPMs for automysqlbackup.
 
