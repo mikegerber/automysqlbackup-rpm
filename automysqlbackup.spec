@@ -1,29 +1,33 @@
-%global commit0 7c0043ad4a2e5a0090a28cc9b9212eb6ee426c66
-%global shortcommit0 %(c=%{commit0}; echo ${c:0:7})
-
 Name:		automysqlbackup
-Version:	3.0
-Release:	1+mike1%{?dist}
+Version:	3.0.7
+Release:	1~mike1%{?dist}
 Summary:	MySQL/MariaDB backup script
 Group:		Applications/Databases
 License:	GPLv2+
-URL:		https://github.com/ksyz/automysqlbackup
-Source0:	https://github.com/ksyz/%{name}/archive/%{commit0}.tar.gz#/%{name}-%{shortcommit0}.tar.gz
+
+%global github_tag %{version}
+
+URL:			https://github.com/sixhop/AutoMySQLBackup
+Source0:	https://github.com/sixhop/AutoMySQLBackup/archive/%{github_tag}.tar.gz#/%{name}-%{version}.tar.gz
+Patch0:	  76.patch
+
 BuildArch:	noarch
 Requires:	bash
 Requires:	bzip2
 Requires:	gzip
+Requires:	pigz
 Requires:	diffutils
 Requires:	openssl
 Requires:	(mariadb or mysql)
 
 %description
-MySQL/MariaDB backup wrapper script for mysqldump, with support for 
+MySQL/MariaDB backup wrapper script for mysqldump, with support for
 backup rotation, compression and incremental backup.
 
 %prep
-%setup -qn %{name}-%{commit0}
+%setup -qn AutoMySQLBackup-%{version}
 sed -e 's|#!/usr/bin/env bash|#!/usr/bin/bash|g' -i automysqlbackup
+%patch 0 -p1
 
 %build
 true
@@ -32,7 +36,7 @@ true
 install -m 755 -d %{buildroot}/%{_bindir}
 install -m 755 -d %{buildroot}/%{_sysconfdir}/automysqlbackup
 
-install -m 755 automysqlbackup %{buildroot}/%{_bindir}/automysqlbackup 
+install -m 755 automysqlbackup %{buildroot}/%{_bindir}/automysqlbackup
 install -m 600 automysqlbackup.conf %{buildroot}/%{_sysconfdir}/automysqlbackup/automysqlbackup.conf
 
 
@@ -42,6 +46,12 @@ install -m 600 automysqlbackup.conf %{buildroot}/%{_sysconfdir}/automysqlbackup/
 %doc README.md LICENSE CHANGELOG
 
 %changelog
+* Wed Oct 14 2026 Mike Gerber <mike@mike-gerber.de> 3.0.7-1~mike1
+- Switch to sixhop fork
+- Update to 3.0.7
+- Require pigz
+- Add PR#76 to support mariadb-dump/remove deprecation warnings
+
 * Sun May 02 2021 Mike Gerber <mike@sprachgewalt.de> 3.0-1+mike1
 - Require mariadb or mysql
 
